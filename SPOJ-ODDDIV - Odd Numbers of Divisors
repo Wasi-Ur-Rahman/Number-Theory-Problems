@@ -1,0 +1,91 @@
+#include <bits/stdc++.h>
+//#include <dbg.h>
+using namespace std;
+#define ll int64_t
+#define gcd(a,b) __gcd(a,b)
+#define lcm(a,b) (a*b)/__gcd(a,b)
+#define pb push_back
+#define all(b) b.begin(),b.end()
+#define revall(b) b.rbegin(),b.rend()
+#define yes cout << "YES\n"
+#define no cout << "NO\n"
+#define F first
+#define S second
+const int N = 1e5;
+const int64_t mod = 1e18;
+
+bool f[N];
+vector<ll> primes;
+vector<ll> mp[N];
+void sieve() {
+  f[0] = 1;
+  f[1] = 1;
+  for (ll i = 2;i * i < N;i++) {
+    if (!f[i]) {
+      for (ll j = i * i;j < N;j += i) {
+        f[j] = 1;
+      }
+    }
+  }
+  for (ll i = 2;i < N;i++) {
+    if (!f[i])
+      primes.pb(i);
+  }
+}
+
+ll nod(ll n) {
+  ll div = 1;
+  for (ll i = 0;i < primes.size() && primes[i] * primes[i] <= n;i++) {
+    if (n % primes[i] == 0) {
+      ll ct = 0;
+      while(n % primes[i] == 0) {
+        ct++;
+        n /= primes[i];
+      }
+      div *= (2 * ct + 1);
+    }
+  }
+  if (n > 1) {
+    div *= 3;
+  }
+  return div;
+}
+
+void precal() {
+  for (ll i = 1;i <= 1e5;i++) {
+    ll p = nod(i);
+    mp[p].pb(i * i);
+  }
+}
+
+void solve() {
+  ll k,low,high;
+  cin >> k >> low >> high;
+  //debug(mp[k]);
+
+  auto lwr = lower_bound(all(mp[k]),low) - mp[k].begin();
+  auto upr = upper_bound(all(mp[k]),high) - mp[k].begin();
+
+  cout << upr - lwr << '\n';
+}
+ 
+int32_t main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(NULL);
+  cout.tie(NULL);
+
+  sieve();
+  precal();
+
+  // freopen("input.txt","r",stdin);
+  //freopen("output.txt","w",stdout);
+  
+ 
+  int t;
+  cin >> t;
+  while (t--)
+    solve();
+  
+    
+  return 0;
+}
